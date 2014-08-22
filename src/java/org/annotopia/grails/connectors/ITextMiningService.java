@@ -28,7 +28,9 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
 public interface ITextMiningService {
-
+	
+	public static final String APY_KEY = "apiKey";
+	
 	/**
 	 * Method that must be implemented by all text mining and entity recognition services
 	 * @param resourceUri			The URI of the analyzed resource
@@ -36,5 +38,6 @@ public interface ITextMiningService {
 	 * @param parameters			The service parametrization
 	 * @return	The 
 	 */
+	@SuppressWarnings("rawtypes")
 	JSONObject textmine(String resourceUri, String content, HashMap parameters);
 }
