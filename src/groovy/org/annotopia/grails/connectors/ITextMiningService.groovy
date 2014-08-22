@@ -29,5 +29,12 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
  */
 public interface ITextMiningService {
 
-	JSONObject textmine(String authorizationToken, String resourceUri, String content, HashMap parameters);
+	/**
+	 * Method that must be implemented by all text mining and entity recognition services
+	 * @param resourceUri			The URI of the analyzed resource
+	 * @param content				The content to analyze
+	 * @param parameters			The service parametrization
+	 * @return	The 
+	 */
+	JSONObject textmine(String resourceUri, String content, HashMap parameters);
 }
