@@ -27,17 +27,14 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
 /**
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
-public interface ITextMiningService {
-	
-	public static final String APY_KEY = "apiKey";
-	
+public interface ITermSearchService {
+
 	/**
-	 * Method that must be implemented by all text mining and entity recognition services
-	 * @param resourceUri			The URI of the analyzed resource
-	 * @param content				The content to analyze
-	 * @param parameters			The service parametrization
-	 * @return	The results in JSON format
+	 * Method that must be implemented by all term search services
+	 * @param content		The search query
+	 * @param parameters	The service parametrization
+	 * @return The results in JSON format
 	 */
 	@SuppressWarnings("rawtypes")
-	JSONObject textmine(String resourceUri, String content, HashMap parameters);
+	JSONObject search(String content, HashMap parameters);
 }
