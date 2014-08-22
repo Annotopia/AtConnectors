@@ -10,10 +10,10 @@ class AtConnectorsGrailsPlugin {
 
     // TODO Fill in these fields
     def title = "At Connectors Plugin" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
+    def author = "Dr. Paolo Ciccarese"
+    def authorEmail = "paolo.ciccarese@gmail.com"
     def description = '''\
-Brief summary/description of the plugin.
+Connectors definitions and interfaces.
 '''
 
     // URL to the plugin's documentation
