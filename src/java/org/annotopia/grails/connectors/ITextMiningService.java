@@ -36,7 +36,7 @@ public interface ITextMiningService {
 	 * @param resourceUri			The URI of the analyzed resource
 	 * @param content				The content to analyze
 	 * @param parameters			The service parametrization
-	 * @return	The results in JSON format
+	 * @return The results in JSON format
 	 */
 	@SuppressWarnings("rawtypes")
 	JSONObject textmine(String resourceUri, String content, HashMap parameters);
