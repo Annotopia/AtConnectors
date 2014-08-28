@@ -30,10 +30,10 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
 public interface IVocabulariesListService {
 
 	/**
-	 *  Method that returns all available vocabularies.
+	 * Method that returns all available vocabularies.
 	 * @param parameters	The service parametrization
 	 * @return List of vocabularies
 	 */
 	@SuppressWarnings("rawtypes")
-	JSONObject retrieveVocabularies(HashMap parameters);
+	JSONObject listVocabularies(HashMap parameters);
 }
