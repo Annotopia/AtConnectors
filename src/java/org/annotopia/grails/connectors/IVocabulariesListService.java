@@ -27,7 +27,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
 /**
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
-public interface IVocabulariesManagmentService {
+public interface IVocabulariesListService {
 
 	/**
 	 *  Method that returns all available vocabularies.
