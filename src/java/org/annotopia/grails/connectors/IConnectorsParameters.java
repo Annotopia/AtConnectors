@@ -20,22 +20,13 @@
  */
 package org.annotopia.grails.connectors;
 
-import java.util.HashMap;
-
-import org.codehaus.groovy.grails.web.json.JSONObject;
-
 /**
+ * Collects all the names of the parameters commonly used by conenctors.
+ * 
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
-public interface ITextMiningService {
-	
-	/**
-	 * Method that must be implemented by all text mining and entity recognition services
-	 * @param resourceUri			The URI of the analyzed resource
-	 * @param content				The content to analyze
-	 * @param parameters			The service parametrization
-	 * @return The results in JSON format
-	 */
-	@SuppressWarnings("rawtypes")
-	JSONObject textmine(String resourceUri, String content, HashMap parameters);
+public interface IConnectorsParameters {
+
+	public static final String APY_KEY = "apiKey";
+	public static final String RETURN_FORMAT = "returnFormat";
 }
