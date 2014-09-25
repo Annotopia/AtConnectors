@@ -43,15 +43,15 @@ class ConnectorsConfigAccessService {
     }
     
     public boolean isProxyDefined() {
-        //grailsApplication.config.domeo.proxy.ip.isEmpty() ?????
-        return (grailsApplication.config.domeo.proxy.ip!=null && grailsApplication.config.domeo.proxy.ip.size()>0 
-            && grailsApplication.config.domeo.proxy.port!=null && grailsApplication.config.domeo.proxy.port.size()>0);
+        //grailsApplication.config.annotopia.server.proxy.host.isEmpty() ?????
+        return (grailsApplication.config.annotopia.server.proxy.host!=null && grailsApplication.config.annotopia.server.proxy.host.size()>0 
+            && grailsApplication.config.annotopia.server.proxy.port!=null && grailsApplication.config.annotopia.server.proxy.port.size()>0);
     }
     
     public HttpHost getProxyHttpHost() {
         if(isProxyDefined()) {
             log.info("proxy: " + getProxyIp() + "-" + getProxyPort()) ;
-            return new HttpHost(getProxyIp(), getProxyPort(), "http");
+            return new HttpHost(getProxyIp(), getProxyPort(), getProxyProtocol());
         } else throw new RuntimeException("No proxy defined, check with isProxyDefined() first.");
     }
     
@@ -63,12 +63,16 @@ class ConnectorsConfigAccessService {
     }
     
     public String getProxyIp() {
-        return grailsApplication.config.domeo.proxy.ip;
+        return grailsApplication.config.annotopia.server.proxy.host;
     }
     
     public Integer getProxyPort() {
-        return new Integer(grailsApplication.config.domeo.proxy.port);
+        return new Integer(grailsApplication.config.annotopia.server.proxy.port);
     }
+	
+	public Integer getProxyProtocol() {
+		return new Integer(grailsApplication.config.annotopia.server.proxy.protocol);
+	}
     
     public String getAdministratorName() {
         try {
