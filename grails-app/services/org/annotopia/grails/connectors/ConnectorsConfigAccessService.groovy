@@ -33,14 +33,8 @@ import org.apache.http.HttpHost
  */
 class ConnectorsConfigAccessService {
 
-    public static final String DEFAULT_EMAIL_ADDRESS = "paolo.ciccarese@gmail.com"
-    public static final String DEFAULT_EMAIL_LABEL = "-please define instance administrator email-"
-    
+
     def grailsApplication;
-    
-    public String getDomeoConfigAdminMissingMessage() {
-        return '--->>> Please define the administratin properties'
-    }
     
     public boolean isProxyDefined() {
         //grailsApplication.config.annotopia.server.proxy.host.isEmpty() ?????
@@ -73,49 +67,4 @@ class ConnectorsConfigAccessService {
 	public Integer getProxyProtocol() {
 		return new Integer(grailsApplication.config.annotopia.server.proxy.protocol);
 	}
-    
-    public String getAdministratorName() {
-        try {
-            return (grailsApplication.config.domeo.admin.name);
-        } catch (Exception e) {
-            log.error("Administrator name not defined");
-            return "-Please define instance administrator name-";
-        }
-    }
-    
-    public String getAdministratorOrganization() {
-        try {
-            return (grailsApplication.config.domeo.admin.organization);
-        } catch (Exception e) {
-            log.error("Administrator organization not defined");
-            return "-Please define instance administrator organization-";
-        }
-    }
-    
-    public boolean doesAdministratorEmailAddressExists() {
-        try {
-            return (grailsApplication.config.domeo.admin.email.address && grailsApplication.config.domeo.admin.email.address.length()>0);
-        } catch (Exception e) {
-            log.error("Administrator email address not defined");
-            return false;
-        }
-    }
-    
-    public String getAdministratorEmailAddress() {
-        if(doesAdministratorEmailAddressExists()) {
-            return grailsApplication.config.domeo.admin.email.to;
-        } else {
-            log.warn("Administrator email address not defined");
-            return DEFAULT_EMAIL_ADDRESS
-        }
-    } 
-    
-    public String getAdministratorEmailLabel() {
-        try {
-            return grailsApplication.config.domeo.admin.email.display;
-        } catch (Exception e) {
-            log.error("Administrator email label not defined");
-            return DEFAULT_EMAIL_LABEL;
-        }
-    }
 }
