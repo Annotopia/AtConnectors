@@ -100,7 +100,14 @@ class BaseTextMiningConversionService {
 		return permissions;
 	}
 	
-	/** @return Create the connector agent content. */
+	/**
+	 * It creates a JSON object for the connector agent (software).
+	 * @param uri	The Agent URI
+	 * @param label	The Agent label
+	 * @param name	The Agent name, can be the same as the label
+	 * @param ver	The Agent version
+	 * @return Create the connector agent content.
+	 */
 	protected JSONObject getConnectorAgent(String uri, String label, String name, String ver) {
 		JSONObject result = new JSONObject( );
 		result.put(IOJsonLd.jsonLdId, uri);
