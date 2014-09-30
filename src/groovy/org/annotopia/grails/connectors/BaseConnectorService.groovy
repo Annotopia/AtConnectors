@@ -37,4 +37,18 @@ public class BaseConnectorService {
 			log.info("NO PROXY selected while accessing " + uri);
 		}
 	}
+	
+	/**
+	 * Verifies the existence of the content. Returns an exception
+	 * if no content is defined.
+	 * @param content The content to process.
+	 * @return The encoded content.
+	 */
+	protected String encodeContent(String content) {
+		if(content==null || content.trim().length()==0) {
+			throw new RuntimeException('No content found');
+		} else {
+			return URLEncoder.encode(content.trim(), MiscUtils.DEFAULT_ENCODING);
+		}
+	}
 }
