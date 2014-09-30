@@ -108,7 +108,7 @@ class BaseTextMiningConversionService {
 	 * @param ver	The Agent version
 	 * @return Create the connector agent content.
 	 */
-	protected JSONObject getConnectorAgent(String uri, String label, String name, String ver) {
+	protected JSONObject getSoftwareAgent(String uri, String label, String name, String ver) {
 		JSONObject result = new JSONObject( );
 		result.put(IOJsonLd.jsonLdId, uri);
 		result.put(IOJsonLd.jsonLdType, "foafx:Software");
