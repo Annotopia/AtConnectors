@@ -24,7 +24,11 @@ import java.text.SimpleDateFormat
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-import org.codehaus.groovy.grails.web.json.JSONObject;
+import org.annotopia.grails.connectors.vocabularies.IOFoaf
+import org.annotopia.grails.connectors.vocabularies.IOJsonLd
+import org.annotopia.grails.connectors.vocabularies.IOPav
+import org.annotopia.grails.connectors.vocabularies.IORdfs
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 /**
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
@@ -94,5 +98,16 @@ class BaseTextMiningConversionService {
 		permissions.put("permissions:isLocked", "false");
 		permissions.put("permissions:accessType", "urn:domeo:access:public");
 		return permissions;
+	}
+	
+	/** @return Create the connector agent content. */
+	protected JSONObject getConnectorAgent(String uri, String label, String name, String ver) {
+		JSONObject result = new JSONObject( );
+		result.put(IOJsonLd.jsonLdId, uri);
+		result.put(IOJsonLd.jsonLdType, "foafx:Software");
+		result.put(IORdfs.label, label);
+		result.put(IOFoaf.name, name);
+		result.put(IOPav.version, ver);
+		return result;	
 	}
 }
