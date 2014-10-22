@@ -33,11 +33,10 @@ import org.apache.http.HttpHost
  */
 class ConnectorsConfigAccessService {
 
-
     def grailsApplication;
+	def configAccessService;
     
     public boolean isProxyDefined() {
-        //grailsApplication.config.annotopia.server.proxy.host.isEmpty() ?????
         return (grailsApplication.config.annotopia.server.proxy.host!=null && grailsApplication.config.annotopia.server.proxy.host.size()>0 
             && grailsApplication.config.annotopia.server.proxy.port!=null && grailsApplication.config.annotopia.server.proxy.port.size()>0);
     }
@@ -57,14 +56,14 @@ class ConnectorsConfigAccessService {
     }
     
     public String getProxyIp() {
-        return grailsApplication.config.annotopia.server.proxy.host;
+		return configAccessService.getAsString("annotopia.server.proxy.host");
     }
     
     public Integer getProxyPort() {
-        return new Integer(grailsApplication.config.annotopia.server.proxy.port);
+		return configAccessService.getAsString("annotopia.server.proxy.port").toInteger();
     }
 	
 	public Integer getProxyProtocol() {
-		return new Integer(grailsApplication.config.annotopia.server.proxy.protocol);
+		return configAccessService.getAsString("annotopia.server.proxy.protocol");
 	}
 }
