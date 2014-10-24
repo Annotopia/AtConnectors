@@ -29,12 +29,14 @@ class Connector {
 	protected static final int DESCRIPTION_MAX_SIZE = 1024;
 	
 	String ver;
-	String name;	
+	String name;
+	String title;
 	String description;
 
 	static constraints = {
 		ver (nullable: true, blank: true, maxSize:NAME_MAX_SIZE)
 		name (nullable: true, blank: true, maxSize:NAME_MAX_SIZE)
+		title (nullable: true, blank: true, maxSize:NAME_MAX_SIZE)
 		description (nullable: true, blank: true, maxSize:DESCRIPTION_MAX_SIZE)
 	}
 }
