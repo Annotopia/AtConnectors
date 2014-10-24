@@ -95,40 +95,40 @@ class ConnectorsManagerService {
 		}
 	}
 	
-	private Object retrieveService(String identifier) {
+	private Object retrieveService(String name) {
 		
 	}
 	
 	/**
 	 * Method that must be implemented by all term search services
-	 * @param service		The service to call
+	 * @param serviceName	The service to call
 	 * @param content		The search query
 	 * @param parameters	The service parametrization
 	 * @return The results in JSON format
 	 */
-	JSONObject search(Object service, String content, HashMap parameters) {
+	JSONObject search(String serviceName, String content, HashMap parameters) {
 		
 	}
 	
 	/**
 	 * Method that returns all available vocabularies.
-	 * @param service		The service to call
+	 * @param serviceName	The service to call
 	 * @param parameters	The service parametrization
 	 * @return List of vocabularies
 	 */
-	JSONObject listVocabularies(Object service, HashMap parameters) {
+	JSONObject listVocabularies(Object serviceName, HashMap parameters) {
 		
 	}
 	
 	/**
 	 * Method that must be implemented by all text mining and entity recognition services
-	 * @param service		The service to call
-	 * @param resourceUri			The URI of the analyzed resource
-	 * @param content				The content to analyze
-	 * @param parameters			The service parametrization
+	 * @param serviceName		The service to call
+	 * @param resourceUri		The URI of the analyzed resource
+	 * @param content			The content to analyze
+	 * @param parameters		The service parametrization
 	 * @return The results in JSON format
 	 */
-	JSONObject textmine(Object service, String resourceUri, String content, HashMap parameters) {
+	JSONObject textmine(Object serviceName, String resourceUri, String content, HashMap parameters) {
 		
 	}
 }
