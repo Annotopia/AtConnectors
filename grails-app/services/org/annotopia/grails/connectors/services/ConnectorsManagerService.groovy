@@ -170,7 +170,7 @@ class ConnectorsManagerService {
 	 * @return The results in JSON format
 	 */
 	JSONObject search(String serviceName, String content, HashMap parameters) {		
-		def service = retrieveServiceFeature("org.annotopia.grails.connectors.ITermSearchService");	
+		def service = retrieveServiceFeature(serviceName, "org.annotopia.grails.connectors.ITermSearchService");	
 		service.search(content, parameters);
 	}
 	
