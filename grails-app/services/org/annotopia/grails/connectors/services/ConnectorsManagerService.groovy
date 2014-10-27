@@ -20,10 +20,9 @@
  */
 package org.annotopia.grails.connectors.services
 
-import java.util.HashMap;
-
 import grails.util.Holders
 
+import org.annotopia.grails.connectors.ITermSearchService
 import org.annotopia.grails.connectors.model.Connector
 import org.annotopia.grails.connectors.model.ConnectorInterface
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
@@ -99,22 +98,22 @@ class ConnectorsManagerService {
 					Class<?> clazz = service.getClass().getSuperclass( );
 					Class<?>[ ] interfaces = clazz.getInterfaces( );
 					for(Class<?> i : interfaces) {
-						switch(i.getName( )) {
+						switch(i.getName()) {
 							case "org.annotopia.grails.connectors.ITermSearchService":
 								log.info("Found Term Search Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName("org.annotopia.grails.connectors.ITermSearchService");
+								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
 								if(ci!=null) connector.interfaces.add(ci)
 								break;
 								
 							case "org.annotopia.grails.connectors.ITextMiningService":
 								log.info("Found Text Mining Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName("org.annotopia.grails.connectors.ITextMiningService");
+								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
 								if(ci!=null) connector.interfaces.add(ci)
 								break;
 								
 							case "org.annotopia.grails.connectors.IVocabulariesListService":
 								log.info("Found Vocabularies List Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName("org.annotopia.grails.connectors.IVocabulariesListService");
+								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
 								if(ci!=null)  connector.interfaces.add(ci)
 								break;
 						}
@@ -161,7 +160,7 @@ class ConnectorsManagerService {
 		
 		boolean compatible = false;
 		for(Class<?> i : interfaces) {
-			if(i.getName().equals("org.annotopia.grails.connectors.ITermSearchService"))
+			if(i.getName().equals(feature))
 				compatible = true;
 		}
 		if(compatible) return service;
@@ -176,7 +175,7 @@ class ConnectorsManagerService {
 	 * @return The results in JSON format
 	 */
 	JSONObject search(String serviceName, String content, HashMap parameters) {		
-		def service = retrieveServiceFeature(serviceName, "org.annotopia.grails.connectors.ITermSearchService");	
+		def service = retrieveServiceFeature(serviceName, ITermSearchService.class.getName());	
 		service.search(content, parameters);
 	}
 	
@@ -187,7 +186,7 @@ class ConnectorsManagerService {
 	 * @return List of vocabularies
 	 */
 	JSONObject listVocabularies(Object serviceName, HashMap parameters) {
-		def service = retrieveServiceFeature(serviceName, "org.annotopia.grails.connectors.IVocabulariesListService");
+		def service = retrieveServiceFeature(serviceName, IVocabulariesListService.class.getName());
 		service.listVocabularies(parameters);
 	}
 	
@@ -200,7 +199,7 @@ class ConnectorsManagerService {
 	 * @return The results in JSON format
 	 */
 	JSONObject textmine(Object serviceName, String resourceUri, String content, HashMap parameters) {
-		def service = retrieveServiceFeature(serviceName, "org.annotopia.grails.connectors.ITextMiningService");
+		def service = retrieveServiceFeature(serviceName, ITextMiningService.class.getName());
 		service.textmine(resourceUri, content, parameters);
 	}
 }
