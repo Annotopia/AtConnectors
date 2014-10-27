@@ -58,6 +58,9 @@ class ConnectorsManagerService {
 		}
 	}
 	
+	/**
+	 * This method dynamically registers all the available connectors.
+	 */
 	public void registerConnectors() {
 		def pluginManager = PluginManagerHolder.getPluginManager();
 		pluginManager.getAllPlugins().each {
@@ -74,8 +77,7 @@ class ConnectorsManagerService {
 					ApplicationContext ctx = Holders.grailsApplication.mainContext
 					Object service = ctx.getBean(serviceName);
 					
-					def connectorName = it.name
-					
+					def connectorName = it.name					
 					def connector = Connector.findByName(connectorName);
 					if(connector==null) {
 						def connectorTitle = ((String)it.getProperties( ).get('title'))
@@ -124,7 +126,8 @@ class ConnectorsManagerService {
 	
 	/**
 	 * Returns the connector service that matches the requested connector
-	 * name.
+	 * name. Returns an exception if a service with that name does not exist
+	 * or if the service is null.
 	 * @param name	The name of the requested connector
 	 * @return The instance of the service of the connector.
 	 */
@@ -144,6 +147,13 @@ class ConnectorsManagerService {
 		}
 	}
 	
+	/**
+	 * Retrieves the service if it offers the requested features.
+	 * Returns an exception if the services does not offer the requested feature.
+	 * @param serviceName	The name of the requested connector
+	 * @param feature		The requested feature.
+	 * @return The instance of the service of the connector.
+	 */
 	private Object retrieveServiceFeature(String serviceName, String feature) {
 		def service = retrieveService(serviceName);
 		Class<?> clazz = service.getClass().getSuperclass( );
