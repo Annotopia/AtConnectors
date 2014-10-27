@@ -23,6 +23,8 @@ package org.annotopia.grails.connectors.services
 import grails.util.Holders
 
 import org.annotopia.grails.connectors.ITermSearchService
+import org.annotopia.grails.connectors.ITextMiningService
+import org.annotopia.grails.connectors.IVocabulariesListService
 import org.annotopia.grails.connectors.model.Connector
 import org.annotopia.grails.connectors.model.ConnectorInterface
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
