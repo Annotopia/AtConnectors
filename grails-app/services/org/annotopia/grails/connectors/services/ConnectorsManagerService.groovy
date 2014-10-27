@@ -63,10 +63,6 @@ class ConnectorsManagerService {
 		pluginManager.getAllPlugins().each {
 			if(it.name.startsWith("cn") && it.name.endsWith("Connector")) {
 				log.info("** Detected: " + it.name);
-				//def serviceName = it.name.substring(2).replaceAll("Connector", "") + "Service";
-				//char[] c = serviceName.toCharArray();
-				//c[0] = Character.toLowerCase(c[0]);
-				//serviceName = new String( c );
 				def serviceName = ((String)it.getProperties( ).get('service'));
 				if(serviceName.trim().length()<3 && !serviceName.endsWith("Service")) {
 					log.error("No service detected: " + serviceName);
