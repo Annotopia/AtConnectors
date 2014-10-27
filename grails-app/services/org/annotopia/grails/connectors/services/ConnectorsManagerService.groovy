@@ -20,6 +20,8 @@
  */
 package org.annotopia.grails.connectors.services
 
+import java.util.HashMap;
+
 import grails.util.Holders
 
 import org.annotopia.grails.connectors.model.Connector
@@ -96,7 +98,7 @@ class ConnectorsManagerService {
 					}
 	
 					// retrieve interfaces for the service class
-					Class<?> clazz = service.getClass( ).getSuperclass( );
+					Class<?> clazz = service.getClass().getSuperclass( );
 					Class<?>[ ] interfaces = clazz.getInterfaces( );
 					for(Class<?> i : interfaces) {
 						switch(i.getName( )) {
@@ -155,6 +157,18 @@ class ConnectorsManagerService {
 	 */
 	JSONObject search(String serviceName, String content, HashMap parameters) {
 		
+		def service = retrieveService(serviceName);	
+		Class<?> clazz = service.getClass().getSuperclass( );
+		Class<?>[ ] interfaces = clazz.getInterfaces( );
+		
+		boolean compatible = false;
+		for(Class<?> i : interfaces) {
+			if(i.getName().equals("org.annotopia.grails.connectors.ITermSearchService")) 
+				compatible = true;
+		}
+		
+		if(compatible) service.search(content, parameters);
+		else throw new RuntimeException("Incompatible service selected.");
 	}
 	
 	/**
@@ -164,7 +178,18 @@ class ConnectorsManagerService {
 	 * @return List of vocabularies
 	 */
 	JSONObject listVocabularies(Object serviceName, HashMap parameters) {
+		def service = retrieveService(serviceName);
+		Class<?> clazz = service.getClass().getSuperclass( );
+		Class<?>[ ] interfaces = clazz.getInterfaces( );
 		
+		boolean compatible = false;
+		for(Class<?> i : interfaces) {
+			if(i.getName().equals("org.annotopia.grails.connectors.IVocabulariesListService"))
+				compatible = true;
+		}
+		
+		if(compatible) service.listVocabularies(parameters);
+		else throw new RuntimeException("Incompatible service selected.");
 	}
 	
 	/**
@@ -176,6 +201,17 @@ class ConnectorsManagerService {
 	 * @return The results in JSON format
 	 */
 	JSONObject textmine(Object serviceName, String resourceUri, String content, HashMap parameters) {
+		def service = retrieveService(serviceName);
+		Class<?> clazz = service.getClass().getSuperclass( );
+		Class<?>[ ] interfaces = clazz.getInterfaces( );
 		
+		boolean compatible = false;
+		for(Class<?> i : interfaces) {
+			if(i.getName().equals("org.annotopia.grails.connectors.ITextMiningService"))
+				compatible = true;
+		}
+		
+		if(compatible) service.textmine(resourceUri, content, parameters);
+		else throw new RuntimeException("Incompatible service selected.");
 	}
 }
