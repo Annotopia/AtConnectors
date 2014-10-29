@@ -42,9 +42,9 @@ class ConnectorsManagerService {
 	public void registerInterfaces() {
 		
 		def interfaces = [
-			["title":"ITermSearchService","name":"org.annotopia.grails.connectors.ITermSearchService"],
-			["title":"ITextMiningService","name":"org.annotopia.grails.connectors.ITextMiningService"],
-			["title":"IVocabulariesListService","name":"org.annotopia.grails.connectors.IVocabulariesListService"]
+			["title":ITermSearchService.class.getSimpleName(),"name":ITermSearchService.class.getName()],
+			["title":ITextMiningService.class.getSimpleName(),"name":ITextMiningService.class.getName()],
+			["title":IVocabulariesListService.class.getSimpleName(),"name":IVocabulariesListService.class.getName()]
 		];
 		
 		interfaces.each { 
@@ -55,6 +55,8 @@ class ConnectorsManagerService {
 					name: it.name,
 					title: it.title
 				).save(failOnError: true);
+			} else {
+				log.warn "Interface already registered: " +  it.name;
 			}
 		}
 	}
