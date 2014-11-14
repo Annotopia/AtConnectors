@@ -42,9 +42,9 @@ class ConnectorsManagerService {
 	public void registerInterfaces() {
 		
 		def interfaces = [
-			["title":ITermSearchService.class.getSimpleName(),"name":ITermSearchService.class.getName()],
-			["title":ITextMiningService.class.getSimpleName(),"name":ITextMiningService.class.getName()],
-			["title":IVocabulariesListService.class.getSimpleName(),"name":IVocabulariesListService.class.getName()]
+			["title":ITermSearchService.class.getSimpleName(),"fullname":ITermSearchService.class.getName(),"name":"Terms Search","description":"Search vocabularies and ontologies."],
+			["title":ITextMiningService.class.getSimpleName(),"fullname":ITextMiningService.class.getName(),"name":"Teztmining","description":"Text mining of textual content"],
+			["title":IVocabulariesListService.class.getSimpleName(),"fullname":IVocabulariesListService.class.getName(),"name":"Vocabularies Listing","description":"Listing of available vocabularies"]
 		];
 		
 		interfaces.each { 
@@ -53,7 +53,9 @@ class ConnectorsManagerService {
 				log.info("** Registering: " + it.name);
 				new ConnectorInterface(
 					name: it.name,
-					title: it.title
+					fullname: it.fullname,
+					title: it.title,
+					description: it.description
 				).save(failOnError: true);
 			} else {
 				log.warn "Interface already registered: " +  it.name;
@@ -128,6 +130,22 @@ class ConnectorsManagerService {
 	}
 	
 	/**
+	 * Returns the list of all available connectors.
+	 * @return The list of all available connectors.
+	 */
+	public Object listConnectors() {
+		return Connector.list();
+	}
+	
+	/**
+	 * Returns the list of all available connector interfaces.
+	 * @return The list of all available connector interfaces.
+	 */
+	public Object listConnectorsInterfaces() {
+		return ConnectorInterface.list();
+	}
+	
+	/**
 	 * Returns the connector service that matches the requested connector
 	 * name. Returns an exception if a service with that name does not exist
 	 * or if the service is null.
@@ -135,6 +153,8 @@ class ConnectorsManagerService {
 	 * @return The instance of the service of the connector.
 	 */
 	private Object retrieveService(String serviceName) {
+		log.warn serviceName
+		log.warn Connector.findByName(serviceName)
 		def connector = Connector.findByName(serviceName);
 		if(connector!=null) {
 			ApplicationContext ctx = Holders.grailsApplication.mainContext
@@ -169,41 +189,5 @@ class ConnectorsManagerService {
 		}
 		if(compatible) return service;
 		else throw new RuntimeException("Incompatible service selected.");
-	}
-	
-	/**
-	 * Method that must be implemented by all term search services
-	 * @param serviceName	The service to call
-	 * @param content		The search query
-	 * @param parameters	The service parametrization
-	 * @return The results in JSON format
-	 */
-	JSONObject search(String serviceName, String content, HashMap parameters) {		
-		def service = retrieveServiceFeature(serviceName, ITermSearchService.class.getName());	
-		service.search(content, parameters);
-	}
-	
-	/**
-	 * Method that returns all available vocabularies.
-	 * @param serviceName	The service to call
-	 * @param parameters	The service parametrization
-	 * @return List of vocabularies
-	 */
-	JSONObject listVocabularies(Object serviceName, HashMap parameters) {
-		def service = retrieveServiceFeature(serviceName, IVocabulariesListService.class.getName());
-		service.listVocabularies(parameters);
-	}
-	
-	/**
-	 * Method that must be implemented by all text mining and entity recognition services
-	 * @param serviceName		The service to call
-	 * @param resourceUri		The URI of the analyzed resource
-	 * @param content			The content to analyze
-	 * @param parameters		The service parametrization
-	 * @return The results in JSON format
-	 */
-	JSONObject textmine(Object serviceName, String resourceUri, String content, HashMap parameters) {
-		def service = retrieveServiceFeature(serviceName, ITextMiningService.class.getName());
-		service.textmine(resourceUri, content, parameters);
 	}
 }

@@ -29,10 +29,14 @@ class ConnectorInterface {
 	protected static final int DESCRIPTION_MAX_SIZE = 1024;
 	
 	String name;
+	String fullname;
 	String title;
+	String description;
 	
 	static constraints = {
 		name (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
+		fullname (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
 		title (nullable: false, blank: false, maxSize:NAME_MAX_SIZE)
+		description (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
 	}
 }
