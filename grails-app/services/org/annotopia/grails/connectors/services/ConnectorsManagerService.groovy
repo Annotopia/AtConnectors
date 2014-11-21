@@ -129,6 +129,7 @@ class ConnectorsManagerService {
 				} else {
 					log.warn("Skipped dynamic connector detection");
 					log.warn("-> serviceName not defined in *Plugin.groovy");
+					log.warn("Plugin will be stil available through custom means");
 				}
 			}
 		}
