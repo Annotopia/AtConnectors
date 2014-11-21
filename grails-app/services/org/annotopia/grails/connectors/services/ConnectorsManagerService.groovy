@@ -72,58 +72,63 @@ class ConnectorsManagerService {
 			if(it.name.startsWith("cn") && it.name.endsWith("Connector")) {
 				log.info("** Detected: " + it.name);
 				def serviceName = ((String)it.getProperties( ).get('service'));
-				if(serviceName.trim().length()<3 && !serviceName.endsWith("Service")) {
-					log.error("No service detected: " + serviceName);
-				} else {				
-					char[] c = serviceName.toCharArray();
-					c[0] = Character.toLowerCase(c[0]);
-					serviceName = new String( c );
-				
-					ApplicationContext ctx = Holders.grailsApplication.mainContext
-					Object service = ctx.getBean(serviceName);
+				if(serviceName!=null) {
+					if(serviceName.trim().length()<3 && !serviceName.endsWith("Service")) {
+						log.error("No service detected: " + serviceName);
+					} else {				
+						char[] c = serviceName.toCharArray();
+						c[0] = Character.toLowerCase(c[0]);
+						serviceName = new String( c );
 					
-					def connectorName = it.name					
-					def connector = Connector.findByName(connectorName);
-					if(connector==null) {
-						def connectorTitle = ((String)it.getProperties( ).get('title'))
-						def connectorVersion = ((String)it.getProperties( ).get('version'))
-						def connectorDescription = ((String)it.getProperties( ).get('description'))
+						ApplicationContext ctx = Holders.grailsApplication.mainContext
+						Object service = ctx.getBean(serviceName);
 						
-						connector = new Connector(
-							ver: connectorVersion,
-							name: connectorName,
-							title: connectorTitle,
-							serviceName: serviceName,
-							description: connectorDescription
-						).save(failOnError: true);
-					} else {
-						log.warn "Connector already registered";
-					}
-	
-					// retrieve interfaces for the service class
-					Class<?> clazz = service.getClass().getSuperclass( );
-					Class<?>[ ] interfaces = clazz.getInterfaces( );
-					for(Class<?> i : interfaces) {
-						switch(i.getName()) {
-							case "org.annotopia.grails.connectors.ITermSearchService":
-								log.info("Found Term Search Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-								if(ci!=null) connector.interfaces.add(ci)
-								break;
-								
-							case "org.annotopia.grails.connectors.ITextMiningService":
-								log.info("Found Text Mining Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-								if(ci!=null) connector.interfaces.add(ci)
-								break;
-								
-							case "org.annotopia.grails.connectors.IVocabulariesListService":
-								log.info("Found Vocabularies List Connector");
-								ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-								if(ci!=null)  connector.interfaces.add(ci)
-								break;
+						def connectorName = it.name					
+						def connector = Connector.findByName(connectorName);
+						if(connector==null) {
+							def connectorTitle = ((String)it.getProperties( ).get('title'))
+							def connectorVersion = ((String)it.getProperties( ).get('version'))
+							def connectorDescription = ((String)it.getProperties( ).get('description'))
+							
+							connector = new Connector(
+								ver: connectorVersion,
+								name: connectorName,
+								title: connectorTitle,
+								serviceName: serviceName,
+								description: connectorDescription
+							).save(failOnError: true);
+						} else {
+							log.warn "Connector already registered";
+						}
+		
+						// retrieve interfaces for the service class
+						Class<?> clazz = service.getClass().getSuperclass( );
+						Class<?>[ ] interfaces = clazz.getInterfaces( );
+						for(Class<?> i : interfaces) {
+							switch(i.getName()) {
+								case "org.annotopia.grails.connectors.ITermSearchService":
+									log.info("Found Term Search Connector");
+									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
+									if(ci!=null) connector.interfaces.add(ci)
+									break;
+									
+								case "org.annotopia.grails.connectors.ITextMiningService":
+									log.info("Found Text Mining Connector");
+									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
+									if(ci!=null) connector.interfaces.add(ci)
+									break;
+									
+								case "org.annotopia.grails.connectors.IVocabulariesListService":
+									log.info("Found Vocabularies List Connector");
+									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
+									if(ci!=null)  connector.interfaces.add(ci)
+									break;
+							}
 						}
 					}
+				} else {
+					log.warn("Skipped dynamic connector detection");
+					log.warn("-> serviceName not defined in *Plugin.groovy");
 				}
 			}
 		}
