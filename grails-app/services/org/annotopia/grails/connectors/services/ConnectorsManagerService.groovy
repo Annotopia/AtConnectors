@@ -25,8 +25,8 @@ import grails.util.Holders
 import org.annotopia.grails.connectors.ITermSearchService
 import org.annotopia.grails.connectors.ITextMiningService
 import org.annotopia.grails.connectors.IVocabulariesListService
-import org.annotopia.grails.connectors.model.Connector
-import org.annotopia.grails.connectors.model.ConnectorInterface
+import org.annotopia.grails.connectors.model.Connector;
+import org.annotopia.grails.connectors.model.ConnectorInterface;
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.context.ApplicationContext
@@ -35,32 +35,50 @@ import org.springframework.context.ApplicationContext
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
 class ConnectorsManagerService {
+	
+	/** Index for the term search interface. */
+	private static final int TERM_SEARCH = 0;
+	
+	/** Index for the text mining interface. */
+	private static final int TEXT_MINING = 1;
+	
+	/** Index for the vocabulary search interface. */
+	private static final int VOCABULARY_SEARCH = 2;
+	
+	/** The list of connector interfaces. */
+	private ConnectorInterface[ ] connectorInterfaces;
+	
+	/** The map of registered connectors. */
+	private Map<String, Connector> connectors;
+	
+	public ConnectorsManagerService( ) {
+		// initialise
+		connectorInterfaces = new ConnectorInterface[3];
+		connectors = new HashMap<String, Connector>(27);
+	}
 
 	/**
 	 * This method registers all the allowed/recognized connectors interfaces.
 	 */
-	public void registerInterfaces() {
-		
-		def interfaces = [
-			["title":ITermSearchService.class.getSimpleName(),"fullname":ITermSearchService.class.getName(),"name":"Terms Search","description":"Search vocabularies and ontologies."],
-			["title":ITextMiningService.class.getSimpleName(),"fullname":ITextMiningService.class.getName(),"name":"Teztmining","description":"Text mining of textual content"],
-			["title":IVocabulariesListService.class.getSimpleName(),"fullname":IVocabulariesListService.class.getName(),"name":"Vocabularies Listing","description":"Listing of available vocabularies"]
-		];
-		
-		interfaces.each { 
-			def connectorInterface = ConnectorInterface.findByTitle(it.title);
-			if(connectorInterface==null) {
-				log.info("** Registering: " + it.name);
-				new ConnectorInterface(
-					name: it.name,
-					fullname: it.fullname,
-					title: it.title,
-					description: it.description
-				).save(failOnError: true);
-			} else {
-				log.warn "Interface already registered: " +  it.name;
-			}
-		}
+	public void registerInterfaces() {		
+		connectorInterfaces[TERM_SEARCH] = new ConnectorInterface(
+			"title": ITermSearchService.class.getSimpleName( ),
+			"fullname": ITermSearchService.class.getName( ),
+			"name": "Terms Search",
+			"description":"Search vocabularies and ontologies."
+		);
+		connectorInterfaces[TEXT_MINING] = new ConnectorInterface(
+			"title": ITextMiningService.class.getSimpleName( ),
+			"fullname": ITextMiningService.class.getName( ),
+			"name": "Textmining",
+			"description": "Text mining of textual content"
+		);
+		connectorInterfaces[VOCABULARY_SEARCH] = new ConnectorInterface(
+			"title": IVocabulariesListService.class.getSimpleName( ),
+			"fullname": IVocabulariesListService.class.getName( ),
+			"name": "Vocabularies Listing",
+			"description":"Listing of available vocabularies"
+		);
 	}
 	
 	/**
@@ -84,44 +102,37 @@ class ConnectorsManagerService {
 						Object service = ctx.getBean(serviceName);
 						
 						def connectorName = it.name					
-						def connector = Connector.findByName(connectorName);
-						if(connector==null) {
-							def connectorTitle = ((String)it.getProperties( ).get('title'))
-							def connectorVersion = ((String)it.getProperties( ).get('version'))
-							def connectorDescription = ((String)it.getProperties( ).get('description'))
-							
-							connector = new Connector(
-								ver: connectorVersion,
-								name: connectorName,
-								title: connectorTitle,
-								serviceName: serviceName,
-								description: connectorDescription
-							).save(failOnError: true);
-						} else {
-							log.warn "Connector already registered";
-						}
+						def connectorTitle = ((String)it.getProperties( ).get('title'))
+						def connectorVersion = ((String)it.getProperties( ).get('version'))
+						def connectorDescription = ((String)it.getProperties( ).get('description'))
+						
+						def connector = new Connector(
+							ver: connectorVersion,
+							name: connectorName,
+							title: connectorTitle,
+							serviceName: serviceName,
+							description: connectorDescription
+						);
+						connectors.put(connectorName, connector);
 		
 						// retrieve interfaces for the service class
 						Class<?> clazz = service.getClass().getSuperclass( );
 						Class<?>[ ] interfaces = clazz.getInterfaces( );
 						for(Class<?> i : interfaces) {
 							switch(i.getName()) {
-								case "org.annotopia.grails.connectors.ITermSearchService":
+								case connectorInterfaces[TERM_SEARCH].getFullname( ):
 									log.info("Found Term Search Connector");
-									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-									if(ci!=null) connector.interfaces.add(ci)
+									connector.interfaces.add(connectorInterfaces[TERM_SEARCH])
 									break;
 									
-								case "org.annotopia.grails.connectors.ITextMiningService":
+								case connectorInterfaces[TEXT_MINING].getFullname( ):
 									log.info("Found Text Mining Connector");
-									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-									if(ci!=null) connector.interfaces.add(ci)
+									connector.interfaces.add(connectorInterfaces[TEXT_MINING])
 									break;
 									
-								case "org.annotopia.grails.connectors.IVocabulariesListService":
+								case connectorInterfaces[VOCABULARY_SEARCH].getFullname( ):
 									log.info("Found Vocabularies List Connector");
-									ConnectorInterface ci = ConnectorInterface.findByName(i.getName());
-									if(ci!=null)  connector.interfaces.add(ci)
+									connector.interfaces.add(connectorInterfaces[VOCABULARY_SEARCH])
 									break;
 							}
 						}
@@ -139,16 +150,16 @@ class ConnectorsManagerService {
 	 * Returns the list of all available connectors.
 	 * @return The list of all available connectors.
 	 */
-	public Object listConnectors() {
-		return Connector.list();
+	public List<Connector> listConnectors() {
+		return connectors.values( );
 	}
 	
 	/**
 	 * Returns the list of all available connector interfaces.
 	 * @return The list of all available connector interfaces.
 	 */
-	public Object listConnectorsInterfaces() {
-		return ConnectorInterface.list();
+	public ConnectorInterface[ ] listConnectorsInterfaces() {
+		return connectorInterfaces;
 	}
 	
 	/**
@@ -160,8 +171,8 @@ class ConnectorsManagerService {
 	 */
 	private Object retrieveService(String serviceName) {
 		log.warn serviceName
-		log.warn Connector.findByName(serviceName)
-		def connector = Connector.findByName(serviceName);
+		log.warn connectors.get(serviceName)
+		def connector = connectors.get(serviceName);
 		if(connector!=null) {
 			ApplicationContext ctx = Holders.grailsApplication.mainContext
 			Object service = ctx.getBean(connector.serviceName);

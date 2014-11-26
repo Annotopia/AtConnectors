@@ -24,19 +24,10 @@ package org.annotopia.grails.connectors.model
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
  */
 class ConnectorInterface {
-
-	protected static final int NAME_MAX_SIZE = 255;
-	protected static final int DESCRIPTION_MAX_SIZE = 1024;
 	
 	String name;
 	String fullname;
 	String title;
 	String description;
-	
-	static constraints = {
-		name (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
-		fullname (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
-		title (nullable: false, blank: false, maxSize:NAME_MAX_SIZE)
-		description (nullable: false, blank: false, maxSize:DESCRIPTION_MAX_SIZE)
-	}
+
 }
