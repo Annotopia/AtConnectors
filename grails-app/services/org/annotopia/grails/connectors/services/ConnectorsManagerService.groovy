@@ -22,13 +22,13 @@ package org.annotopia.grails.connectors.services
 
 import grails.util.Holders
 
+import org.annotopia.grails.connectors.IBibliographyService
 import org.annotopia.grails.connectors.ITermSearchService
 import org.annotopia.grails.connectors.ITextMiningService
 import org.annotopia.grails.connectors.IVocabulariesListService
 import org.annotopia.grails.connectors.model.Connector;
 import org.annotopia.grails.connectors.model.ConnectorInterface;
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
-import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.context.ApplicationContext
 
 /**
@@ -45,6 +45,9 @@ class ConnectorsManagerService {
 	/** Index for the vocabulary search interface. */
 	private static final int VOCABULARY_SEARCH = 2;
 	
+	/** Index for the bibliography search interface. */
+	private static final int BIBLIOGRAPHY_SEARCH = 3;
+	
 	/** The list of connector interfaces. */
 	private ConnectorInterface[ ] connectorInterfaces;
 	
@@ -53,7 +56,7 @@ class ConnectorsManagerService {
 	
 	public ConnectorsManagerService( ) {
 		// initialise
-		connectorInterfaces = new ConnectorInterface[3];
+		connectorInterfaces = new ConnectorInterface[4];
 		connectors = new HashMap<String, Connector>(27);
 	}
 
@@ -79,6 +82,12 @@ class ConnectorsManagerService {
 			"name": "Vocabularies Listing",
 			"description":"Listing of available vocabularies"
 		);
+		connectorInterfaces[BIBLIOGRAPHY_SEARCH] = new ConnectorInterface(
+			"title": IBibliographyService.class.getSimpleName( ),
+			"fullname": IBibliographyService.class.getName( ),
+			"name": "Bibliography Search",
+			"description":"Bibliography Search"
+		);
 	}
 	
 	/**
@@ -99,42 +108,52 @@ class ConnectorsManagerService {
 						serviceName = new String( c );
 					
 						ApplicationContext ctx = Holders.grailsApplication.mainContext
-						Object service = ctx.getBean(serviceName);
-						
-						def connectorName = it.name					
-						def connectorTitle = ((String)it.getProperties( ).get('title'))
-						def connectorVersion = ((String)it.getProperties( ).get('version'))
-						def connectorDescription = ((String)it.getProperties( ).get('description'))
-						
-						def connector = new Connector(
-							ver: connectorVersion,
-							name: connectorName,
-							title: connectorTitle,
-							serviceName: serviceName,
-							description: connectorDescription
-						);
-						connectors.put(connectorName, connector);
-		
-						// retrieve interfaces for the service class
-						Class<?> clazz = service.getClass().getSuperclass( );
-						Class<?>[ ] interfaces = clazz.getInterfaces( );
-						for(Class<?> i : interfaces) {
-							switch(i.getName()) {
-								case connectorInterfaces[TERM_SEARCH].getFullname( ):
-									log.info("Found Term Search Connector");
-									connector.interfaces.add(connectorInterfaces[TERM_SEARCH])
-									break;
-									
-								case connectorInterfaces[TEXT_MINING].getFullname( ):
-									log.info("Found Text Mining Connector");
-									connector.interfaces.add(connectorInterfaces[TEXT_MINING])
-									break;
-									
-								case connectorInterfaces[VOCABULARY_SEARCH].getFullname( ):
-									log.info("Found Vocabularies List Connector");
-									connector.interfaces.add(connectorInterfaces[VOCABULARY_SEARCH])
-									break;
-							}
+						try {
+							Object service = ctx.getBean(serviceName);
+							
+							def connectorName = it.name					
+							def connectorTitle = ((String)it.getProperties( ).get('title'))
+							def connectorVersion = ((String)it.getProperties( ).get('version'))
+							def connectorDescription = ((String)it.getProperties( ).get('description'))
+							
+							def connector = new Connector(
+								ver: connectorVersion,
+								name: connectorName,
+								title: connectorTitle,
+								serviceName: serviceName,
+								description: connectorDescription
+							);
+							connectors.put(connectorName, connector);
+			
+							// retrieve interfaces for the service class
+							Class<?> clazz = service.getClass().getSuperclass( );
+							Class<?>[ ] interfaces = clazz.getInterfaces( );
+							for(Class<?> i : interfaces) {
+								switch(i.getName()) {
+									case connectorInterfaces[TERM_SEARCH].getFullname( ):
+										log.info("Found Term Search Connector");
+										connector.interfaces.add(connectorInterfaces[TERM_SEARCH])
+										break;
+										
+									case connectorInterfaces[TEXT_MINING].getFullname( ):
+										log.info("Found Text Mining Connector");
+										connector.interfaces.add(connectorInterfaces[TEXT_MINING])
+										break;
+										
+									case connectorInterfaces[VOCABULARY_SEARCH].getFullname( ):
+										log.info("Found Vocabularies List Connector");
+										connector.interfaces.add(connectorInterfaces[VOCABULARY_SEARCH])
+										break;
+										
+									case connectorInterfaces[BIBLIOGRAPHY_SEARCH].getFullname( ):
+										log.info("Found Bibliography Search Connector");
+										connector.interfaces.add(connectorInterfaces[BIBLIOGRAPHY_SEARCH])
+										break;
+								}
+							} 
+						} catch (Exception e) {
+							log.error  it.name + ' not registered in connectors facade'
+							log.error  it.name + ': ' + e.getMessage();
 						}
 					}
 				} else {
