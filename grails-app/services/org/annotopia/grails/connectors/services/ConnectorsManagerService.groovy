@@ -169,7 +169,7 @@ class ConnectorsManagerService {
 	 * Returns the list of all available connectors.
 	 * @return The list of all available connectors.
 	 */
-	public List<Connector> listConnectors() {
+	public Collection<Connector> listConnectors() {
 		return connectors.values( );
 	}
 	
