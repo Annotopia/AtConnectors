@@ -15,6 +15,7 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
     repositories {
+		mavenCentral()
         grailsCentral()
         mavenRepo "http://repository.codehaus.org/"
     }
